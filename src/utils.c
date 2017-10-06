@@ -3,7 +3,6 @@
 #include "stdio.h"
 #include "malloc.h"
 
-
 void mysh_parse_command(const char* command,
                         int *argc, char*** argv)
 {
@@ -13,10 +12,9 @@ void mysh_parse_command(const char* command,
 
 	int i = 0; //word index
 	int len;
+	int num = 0;//default num
 
-	argc = 0;//default num
-
-	len = strlen(cmd);
+	len = strlen(command);
 
 	//number of words (=argc)
 	strcpy(cmd2, command);
@@ -25,14 +23,15 @@ void mysh_parse_command(const char* command,
 
 	while(token!=NULL)
 	{
-		argc++;
-		token strtok(NULL, " ");
+		num++;
+		token = strtok(NULL, " ");
 	}
+	*argc = num;
 
 	//malloc
-	*argv = (char**)malloc(sizeof(char*)*argc);
+	*argv = (char**)malloc(sizeof(char*)*num);
 	
-	for(int k=0; k<argc; k++)
+	for(int k=0; k<num; k++)
 	{
 		*argv[k] = (char*)malloc(sizeof(char)*len);
 	}
@@ -49,12 +48,12 @@ void mysh_parse_command(const char* command,
 	
 	
 	//print
-	printf("argc == %d\n", argc);
+	printf("argc == %d\n", *argc);
 	printf("argv == {");
-	for(i=0; i<argc; i++)
+	for(i=0; i < num; i++)
 	{
 		printf(" \"%s\"", *argv[i]);
-		if(i != argc-1)
+		if(i != num-1)
 		{
 			printf(",");
 		}
@@ -62,7 +61,7 @@ void mysh_parse_command(const char* command,
 	printf(" }");
 
 	//free
-	for(i=0; i<argc; i++)
+	for(i=0; i<num; i++)
 	{
 		if(0 == *argv[i])
 		{
