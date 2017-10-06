@@ -2,53 +2,59 @@
 #include "string.h"
 #include "stdio.h"
 #include "malloc.h"
+
+
 void mysh_parse_command(const char* command,
                         int *argc, char*** argv)
 {
-  	char* c_copy; // command copy because it's const
-  	int c_len; // command lenght(=col)
-  	int c_num; // number of the command's words(=row)
-  	char ***word; //each word alloc
-	int i;
-  	char* token = 0;
-	char* nextTok = 0;
+  	char* cmd1; // for malloc
+	char* cmd2; // for numbering
+	char* token;
 
-  	//1. copy the command and get the basic info.
-  	strcpy(c_copy, command);
-  	c_len = strlen(c_copy)-1;
+	int i = 0; //word index
+	int len;
 
+	argc = 0;//default num
 
-  	c_num=1;
-  	for(i=0; i<col; i++)
-  	{
-		if(c_copy[i] == ' ')
-		{
-			c_num++;
-		}	
-  	}	
+	len = strlen(cmd);
 
-  	word = (char**)malloc(sizeof(char*)*c_num);
-
-  	for(i=0; i<c_num; i++)
-  	{
-  		word[i] = (char*)malloc(sizeof(char)*c_num);
-  	}
-
-  	word[0] = strtok(c_copy, " ", &nextTok);
-  	for(i=1; i<row; i++)
-  	{
-  		if( 0 != *nextTok)
-		{
-			word[i] = strtok_s(NULL, " ", &nextTok);
-		}
-  	}
+	//number of words (=argc)
+	strcpy(cmd2, command);
 	
-	printf("argc == %d\n", *c_num);
-	printf("argv == {");
-	for(i=0; i<c_num; i++)
+	token = strtok(cmd2, " ");
+
+	while(token!=NULL)
 	{
-		printf(" \"%s\"", word[i]);
-		if(i != c_num-1)
+		argc++;
+		token strtok(NULL, " ");
+	}
+
+	//malloc
+	*argv = (char**)malloc(sizeof(char*)*argc);
+	
+	for(int k=0; k<argc; k++)
+	{
+		*argv[k] = (char*)malloc(sizeof(char)*len);
+	}
+
+	strcpy(cmd1, command);
+	
+	token = strtok(cmd1, " ");
+
+	while(token != NULL)
+	{
+		strcpy(*((*argv) + i++),token);
+		token = strtok(NULL, " ");
+	}
+	
+	
+	//print
+	printf("argc == %d\n", argc);
+	printf("argv == {");
+	for(i=0; i<argc; i++)
+	{
+		printf(" \"%s\"", *argv[i]);
+		if(i != argc-1)
 		{
 			printf(",");
 		}
@@ -56,19 +62,19 @@ void mysh_parse_command(const char* command,
 	printf(" }");
 
 	//free
-	for(i=0; i<c_num; i++)
+	for(i=0; i<argc; i++)
 	{
-		if(0 == word[i])
+		if(0 == *argv[i])
 		{
-			free(word[i]);
-			word[i] = 0
+			free(*argv[i]);
+			*argv[i] = 0;
 		}
 	}
 
-	if( 0 == word)
+	if( 0 == *argv)
 	{
-		free(word);
-		word = 0;
+		free(*argv);
+		*argv = 0;
 	}
 
 	return;
