@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "string.h"
 #include "stdio.h"
-#include "malloc.h"
+#include "stdlib.h"
 
 void mysh_parse_command(const char* command,
                         int *argc, char*** argv)
@@ -47,34 +47,5 @@ void mysh_parse_command(const char* command,
 	}
 	
 	
-	//print
-	printf("argc == %d\n", *argc);
-	printf("argv == {");
-	for(i=0; i < num; i++)
-	{
-		printf(" \"%s\"", *argv[i]);
-		if(i != num-1)
-		{
-			printf(",");
-		}
-	}
-	printf(" }");
-
-	//free
-	for(i=0; i<num; i++)
-	{
-		if(0 == *argv[i])
-		{
-			free(*argv[i]);
-			*argv[i] = 0;
-		}
-	}
-
-	if( 0 == *argv)
-	{
-		free(*argv);
-		*argv = 0;
-	}
-
 	return;
 }
