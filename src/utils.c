@@ -1,51 +1,51 @@
 #include "utils.h"
-#include "string.h"
-#include "stdio.h"
-#include "stdlib.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void mysh_parse_command(const char* command,
                         int *argc, char*** argv)
 {
-  	char* cmd1; // for malloc
-	char* cmd2; // for numbering
-	char* token;
-
-	int i = 0; //word index
-	int len;
-	int num = 0;//default num
-
-	len = strlen(command);
-
-	//number of words (=argc)
-	strcpy(cmd2, command);
+	//statement
+	int num = 0;
 	
-	token = strtok(cmd2, " ");
+	char* cpy = NULL;
+	char* tok = NULL;
 
-	while(token!=NULL)
+	//allocation
+	cpy = (char*)malloc(100*sizeof(char));
+	tok = (char*)malloc(100*sizeof(char));
+
+	//copy
+	strcpy(cpy, command);
+
+	//allocation2
+	*argv =(char**)malloc(100*sizeof(char*));
+	**argv = (char*)malloc(100*sizeof(char));
+
+	//tokenizing
+	tok = strtok(cpy, "' ', \n, \t");
+
+	if(tok == NULL)
 	{
-		num++;
-		token = strtok(NULL, " ");
+		*argc = 1;
+		strcpy((*argv)[0],"");
+	 	return;	
 	}
+
+	while(tok != NULL)
+	{
+		strcpy((*argv)[num], tok);
+		*((*argv)+(++num)) = (char*)malloc(100*sizeof(char));
+		tok = strtok(NULL, "' ',\n,\t");
+	}
+	
+	//numbering
 	*argc = num;
 
-	//malloc
-	*argv = (char**)malloc(sizeof(char*)*num);
+	//free
+	free(tok);
+	free(cpy);
 	
-	for(int k=0; k<num; k++)
-	{
-		*argv[k] = (char*)malloc(sizeof(char)*len);
-	}
-
-	strcpy(cmd1, command);
-	
-	token = strtok(cmd1, " ");
-
-	while(token != NULL)
-	{
-		strcpy(*((*argv) + i++),token);
-		token = strtok(NULL, " ");
-	}
-	
-	
-	return;
+	return ;
 }
